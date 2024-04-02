@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 # this file is to be loaded into worker nodes
 
 #ip of the node that you are trying to communicate with
