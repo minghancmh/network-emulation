@@ -2,7 +2,7 @@ FROM kindest/node:v1.21.14
 
 WORKDIR /usr/src
 
-RUN apt update && apt-get install netcat-openbsd
+RUN apt update && apt-get install netcat-openbsd && apt-get install net-tools
 
 COPY send_hello.sh .
 COPY welcome.sh .
