@@ -12,9 +12,11 @@ chmod +x ./clean.sh
 ## Getting the routing tables
 The config of the topology can be edited in `config`. Thereafter, run `./gen.sh` to get the routing tables. This will be located in `routing_tables.json`.
 
+`./clean.sh` can be run to clean up the folder structure. It removes the output files. 
 
 
-### The below is the readme of toe original repository.
+
+### The below is the readme of the original repository.
 ## Running topo-gen
 To run `topo-gen` use the following command:
 
