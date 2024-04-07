@@ -2,8 +2,20 @@
 
 This python tool generates random network topologies consisting of routers, clients, and servers. Input parameters can be specified in a configuration file. The generated topologies are written into JSON output files and optionally plotted in PDF format.
 
-## Running topo-gen
+## Set up 
+Before using this module, add executing permisisons to the `gen`and `clean` scripts.
+```
+chmod +x ./gen.sh
+chmod +x ./clean.sh
+```
 
+## Getting the routing tables
+The config of the topology can be edited in `config`. Thereafter, run `./gen.sh` to get the routing tables. This will be located in `routing_tables.json`.
+
+
+
+### The below is the readme of toe original repository.
+## Running topo-gen
 To run `topo-gen` use the following command:
 
 ```
