@@ -6,7 +6,7 @@
   "router-links": "2",
   "clients": "0",
   "client-links": "1",
-  "servers": "1",
+  "servers": "0", 
   "server-links": "1",
   "channels": "1",
   "channel-rates": "10"

@@ -11,6 +11,21 @@ class APSP:
         with open(self.inputFile, "r") as file:
             connections_data = json.load(file)["connections"]
 
+        for connection in connections_data:
+            destn = connection["destination_id"]
+            src = connection["source_id"]
+            destn_num = int(destn[-1])
+            src_num = int(src[-1])
+            if (destn_num == 1):
+                connection["destination_id"] = "test-cluster-worker"
+            else:
+                connection["destination_id"] = "test-cluster-worker" + str(destn_num)
+            if (src_num == 1):
+                connection["source_id"] = "test-cluster-worker"
+            else:
+                connection["source_id"] = "test-cluster-worker" + str(src_num)
+
+
 
         # Initialize an empty graph
         graph = {}

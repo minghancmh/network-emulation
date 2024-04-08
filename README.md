@@ -1,11 +1,13 @@
 # networksConfig
 
 # Set up
-```jsx
-// Allow getip.sh to have executing permissions
-chmod +x ./getip.sh
-```
 
+```jsx
+// Allow setup.sh to have executing permissions
+chmod +x ./setup.sh
+
+./setup.sh // This creates a kind cluster, and loads the routing_tables into every node
+```
 
 ```jsx
 // install kind
@@ -47,6 +49,17 @@ kubectl get nodes -o wide
 
 // get cluster info
 kubectl cluster-info --context kind-k8s-playground
+
+// get configMaps
+kubectl get configmaps
+
+// delete configMaps
+
+// describe configmaps
+kubectl describe configmaps routing-table
+
+
+
 
 // see all active connections
 ss -tuln
