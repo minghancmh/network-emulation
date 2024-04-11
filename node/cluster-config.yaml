@@ -1,0 +1,11 @@
+#9 node (8 workers) cluster config
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    image: node-image
+  - role: worker
+    image: node-image
+  - role: worker
+    image: node-image
+
