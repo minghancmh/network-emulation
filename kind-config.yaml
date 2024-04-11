@@ -14,9 +14,4 @@ nodes:
     image: custom-kindest-node
   - role: worker
     image: custom-kindest-node
-  - role: worker
-    image: custom-kindest-node
-  - role: worker
-    image: custom-kindest-node
-  - role: worker
-    image: custom-kindest-node
+
