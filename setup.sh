@@ -3,40 +3,39 @@
 # Make sure we have permissions for all the files
 chmod +x ./topology-generator/gen.sh
 chmod +x ./clean.sh
-chmod +x ./applyRoutingTable.sh
+chmod +x ./applyRoutingInfo.sh
 chmod +x ./getip.sh
 
 TOPO_CONFIG_FILE="./topology-generator/config"
 
-# Path to your Kind configuration file
-KIND_CONFIG_FILE="./kind-config.yaml"
+# Path to your docker-compose file 
+DOCKER_COMPOSE_FILE="docker-compose.yaml"
 
 
 # Count the number of worker nodes
-worker_count=$(grep -c "role: worker" "$KIND_CONFIG_FILE")
+replicas=$(yq e '.services.node.deploy.replicas' "$DOCKER_COMPOSE_FILE")
 
 
 # Extract the "routers" value using jq
 routers=$(jq -r '.routers' "$TOPO_CONFIG_FILE")
 echo "Num routers generated in topology generator: $routers"
-echo "Num workers in kind-config.yaml: $worker_count"
+echo "Num replicas in docker-compose.yaml: $replicas"
 
 # Check if the "routers" value is equal to the number of worker nodes in kind.
-if [ ! $routers -eq $worker_count ]; then
+if [ ! $routers -eq $replicas ]; then
     echo "ERROR: worker_count in kind_config does not match the number of routers in topology-generator"
     exit 1
 fi
 
 
-# Generates the docker image
-docker build -t custom-kindest-node .
+# Builds docker image and spins up containers
+cd node
+docker-compose up -d
 
-
-# Create the kind cluster
-kind create cluster --name=test-cluster --config=kind-config.yaml
 
 # Generate the topology information
 echo "Generating topology information."
+cd .. 
 cd topology-generator && ./gen.sh
 cd ..
 
@@ -45,4 +44,4 @@ cd ..
 echo "Applying the routing info to each node."
 ./applyRoutingInfo.sh
 
-echo "Kind cluster created."
+echo "Nodes created."

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Clean removes the entire kind environment and all of its dependencies. 
+# Clean removes all Docker containers created by Docker Compose.
 
 # Prompt the user for confirmation
-echo "This script deletes the entire kind environment and its dependencies. Do you wish to continue? (y/n)"
+echo "This script deletes all Docker containers created by Docker Compose. Do you wish to continue? (y/n)"
 read -r response
 
 # Check the user's response
@@ -27,12 +27,12 @@ rm -f ./topology-generator/output*
 # Remove routing_tables.json file
 rm -f ./topology-generator/routing_tables.json
 
-# Delete the kind cluster
-kind delete cluster --name test-cluster
+# Shut down and remove containers created by Docker Compose
+docker-compose down
 
-# Remove ipaddr.json
-rm -f ./ipaddr.json
+# Remove docker image 
+docker image rm networksConfig-node
+
+# Optionally, remove other files or perform additional cleanup here
 
 echo "Cleanup completed."
-
-

@@ -1,12 +1,16 @@
 version: '3.8'
 
 services:
-  source-node:
+  node:
     build:
       context: .
       dockerfile: Dockerfile
     # Set the number of desired replicas (containers)
     # You can adjust the `replicas` value as needed
     deploy:
-      replicas: 3
+      replicas: 5
     # Optionally, you can set environment variables or other configurations here
+
+
+# docker-compose up -d
+# docker-compose logs <service-name>
