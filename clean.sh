@@ -31,7 +31,7 @@ rm -f ./topology-generator/routing_tables.json
 docker-compose down
 
 # Remove docker image 
-docker image rm networksConfig-node
+# docker image rm networksconfig-node
 
 # Optionally, remove other files or perform additional cleanup here
 
