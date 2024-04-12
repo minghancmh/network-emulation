@@ -19,4 +19,4 @@ ENTRYPOINT ["python3", "-u", "node.py", "--listen"]
 
 
 
-#docker run -it --entrypoint=/bin/bash node_image
+#docker run -it --entrypoint=/bin/bash networksconfig-node
