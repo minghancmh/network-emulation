@@ -2,13 +2,18 @@ import zfec
 from utils import Packet
 from typing import List
 import zlib
+from packetizer import Packetizer
 
 class Receiver:
-    def __init__(self, SENDER_M: int, receiverNodeIP: str):
+    def __init__(self, senderK:int, senderM: int, receiverNodeIP: str):
+        print(f"[RECEIVER]: Initializing receiver...")
         self.buffer: List[Packet] = [] # A list of packets that the receiver has received
         self.decoder = None # Note that the decoder needs to be instantiated every decode call because k,m are dependent on the packets received
-        self.SENDER_M = SENDER_M # m value in the encoder of the sender
+        self.senderM = senderM # m value in the encoder of the sender
         self.myip = receiverNodeIP # IP of the receiver node
+        self.minPackets = senderK # k value in the encoder of the sender. The receiver must receive at least k packets, or decoding will fail.
+        self.decodedPackets = None
+        self.packetizer = Packetizer()
 
     def recv(self):
         # This function should append the packet to the buffer of the receiver
@@ -29,11 +34,14 @@ class Receiver:
         return packetChecksum == currChecksum
 
     def decode(self):
+        print(f"[RECEIVER]: decoding...")
+        if len(self.buffer) < self.minPackets:
+            raise Exception(f"[RECEIVER]: DECODING FAIL. Received {len(self.buffer)} packets at the receiver. Need at least {self.minPackets} packets.")
         # Note that the value of m here should be the same as the value of m as the sender
         # k: len of the buffer
         k = len(self.buffer)
-        self.decoder = zfec.Decoder(k, self.SENDER_M)
-        blocksReceived = [None] * k
+        self.decoder = zfec.Decoder(k, self.senderM)
+        blocksReceived = []
         blockNums = []
 
         self.buffer = sorted(self.buffer, key=lambda pkt:pkt.packetNumber)
@@ -41,42 +49,21 @@ class Receiver:
             blocksReceived.append(pkt.packetData)
             blockNums.append(pkt.packetNumber)
 
+
+        decoded = self.decoder.decode(blocksReceived, blockNums)
+
         self.buffer: List[Packet] = [] # clear the buffer
         self.decoder = None # clear the decoder 
 
-        return self.decoder.decode(blocksReceived, blockNums)
+        self.decodedPackets = decoded[:self.minPackets]
 
-        
-        # sort out the buffer interms of the index of the packets
-
+        return decoded
+    
+    def postProcess(self):
+        # this function assumes that decode has already been called. This is just to derive the original text file.
+        assert self.decodedPackets != None
+        return self.packetizer.postProcess(self.decodedPackets)
 
 
 
     
-
-# enc = zfec.Encoder(4, 10)
-# dec = zfec.Decoder(5, 10)
-
-# out = enc.encode([b"hello", b"how00", b"are00", b"you00"])
-# print("encoded:", out)
-
-# # corrupt 2 blocks
-# blockNums = [i for i in range(len(out))]
-
-# for i in range(5):
-#     rand_num = random.randint(0,5)
-#     out[rand_num] = None
-#     blockNums.remove(rand_num)
-
-
-# blocksReceived = []
-# for i in range(len(out)):
-#     if out[i] != None:
-#         blocksReceived.append(out[i])
-
-
-# print("blocks received:", blocksReceived)
-
-# recovered = dec.decode(blocksReceived, blockNums)
-
-# print("recovered:", recovered)

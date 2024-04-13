@@ -1,8 +1,3 @@
-from sender import Sender
-from router import Router
-from receiver import Receiver
-
-inputToSend = """
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
 Nulla pretium lectus turpis, at tempor nisi faucibus sed. 
 Morbi condimentum sodales justo, in placerat libero vestibulum eget. 
@@ -19,10 +14,3 @@ dignissim mi blandit. Curabitur eget felis nec sapien tincidunt molestie non id 
 Fusce sed nunc nec ligula placerat aliquam. Vestibulum nec nisi eget leo gravida posuere 
 vel vitae orci. Vivamus cursus, arcu sed ullamcorper molestie, turpis ex hendrerit risus, 
 at vehicula libero orci ut orci.
-"""
-sender = Sender(0, inputToSend, "1.1.1.1", "2.2.2.2", 11111, 22222)
-sender.encode()
-packets = list(sender.packetQueue)
-print(packets)
-
-print(len(packets))
