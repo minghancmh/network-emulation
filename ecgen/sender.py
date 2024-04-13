@@ -4,8 +4,8 @@ import math
 from packetizer import Packetizer
 from collections import deque
 from utils import Packet
+from const import LEN_DATA_PACKET
 
-LEN_DATA_PACKET = 64
 
 class Sender:
     def __init__(self, redundancy_factor: float, input: str, senderIP: str, destinationIP: str, sourcePort: int, destinationPort: int):
@@ -14,7 +14,7 @@ class Sender:
             For example, if the input packetizes into 256 blocks, and k is set to 0.1, then floor(0.1*256) = 25 extra packets will be generated
         input: This is the input string that is to be sent across the network
         """
-        print("Initializing sender...")
+        print("[SENDER]: Initializing sender...")
         self.redundancy_factor = redundancy_factor
         self.input = input 
         self.senderIP = senderIP
@@ -25,17 +25,24 @@ class Sender:
 
         self.packetizer = Packetizer(LEN_DATA_PACKET)
         self.packets = self.packetizer.parse(self.input)
+
         k = len(self.packets)
         m = k + math.floor(self.redundancy_factor * k)
+        self.k = k
+        self.m = m
         self.encoder = zfec.Encoder(k, m)
         self.packetQueue: deque[Packet] = deque([])
 
+    def getkm(self):
+        return (self.k,self.m)
+
     def encode(self):
+        print(f"[SENDER]: encoding...")
         dataPackets = self.encoder.encode(self.packets)
         for i in range(len(dataPackets)):
             packet = Packet(dataPackets[i], i, self.sourcePort, self.destinationPort, LEN_DATA_PACKET, self.sourceIP, self.destinationIP)
             self.packetQueue.append(packet)
-        self.printAllPacketsInQueue()
+
 
 
 
