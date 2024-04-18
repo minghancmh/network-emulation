@@ -5,6 +5,7 @@ from packetizer import Packetizer
 from collections import deque
 from utils import Packet
 from const import LEN_DATA_PACKET
+import socket
 
 
 class Sender:
@@ -59,7 +60,18 @@ class Sender:
     def send(self, packet:Packet):
         # input sending logic to other nodes here
         # feel free to add class attributes such as next nodes IP_addrs
+        print(f"[SENDER]: sender sending packet...")
+        packet.printPacket()
         pass
+
+    def displaySenderAttributes(self):
+        print(f"""\n=====SENDER ATTRIBUTES=====\
+      \nredundancy_factor: {self.redundancy_factor}\
+      \nsenderIP: {self.senderIP}\
+      \ndestinationIP: {self.destinationIP}\
+      \nsourcePort: {self.sourcePort}\
+      \ndestinationPort: {self.destinationPort}
+      """)
 
     
 
