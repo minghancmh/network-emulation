@@ -9,7 +9,7 @@ import random
 
 with open("sampleInput.txt", "r") as f:
     inputToSend = f.read()
-sender = Sender(0.2, inputToSend, "1.1.1.1", "2.2.2.2", 11111, 22222) # 0.2 is the redundancy factor. Very it and see results!
+sender = Sender(0.2, inputToSend, "1.1.1.1", "2.2.2.2", 11111, 22222) # 0.2 is the redundancy factor. Vary it and see results!
 k,m = sender.getkm()
 
 sender.encode()
@@ -37,6 +37,9 @@ decodedPackets = receiver.decode()
 
 
 ret_str = receiver.postProcess()
+
+print(f"Payload received at receiver: {ret_str}")
+assert ret_str == inputToSend, "decode failed."
 
 
 
