@@ -1,6 +1,9 @@
 ipaddr.json
 __pycache__/
+<<<<<<< HEAD
 networksenv
+=======
+>>>>>>> bae280f (fk DS_Store)
 .DS_Store
 
 networksenv
