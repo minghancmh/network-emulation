@@ -1,5 +1,6 @@
 # https://github.com/tahoe-lafs/zfec
 import pickle
+import uuid
 import zfec
 import math
 from packetizer import Packetizer
@@ -11,7 +12,7 @@ from const import PORT
 
 
 class Sender:
-    def __init__(self, redundancy_factor: float, input: str, senderIP: str, destinationIP: str, sourcePort: int, destinationPort: int):
+    def __init__(self, redundancy_factor: float, senderIP: str, destinationIP: str, sourcePort: int, destinationPort: int ):
         """
         redundancy_factor: A scalar factor which determines how many extra packets are going to be generated
             For example, if the input packetizes into 256 blocks, and k is set to 0.1, then floor(0.1*256) = 25 extra packets will be generated
@@ -19,21 +20,18 @@ class Sender:
         """
         print("[SENDER]: Initializing sender...")
         self.redundancy_factor = redundancy_factor
-        self.input = input 
+        self.input = None 
         self.senderIP = self.get_myip()
         self.sourcePort = sourcePort
         self.destinationPort = destinationPort
         self.sourceIP = self.senderIP
         self.destinationIP = destinationIP
         self.packetizer = Packetizer(LEN_DATA_PACKET)
-        self.packets = self.packetizer.parse(self.input)
+        self.packets = None
         self.borderGatewayRouterIP = None
-
-        k = len(self.packets)
-        m = k + math.floor(self.redundancy_factor * k)
-        self.k = k
-        self.m = m
-        self.encoder = zfec.Encoder(k, m)
+        self.k = 0 
+        self.m = 0 
+        self.encoder = None 
         self.packetQueue: deque[Packet] = deque([])
 
         self.displaySenderAttributes()
@@ -45,15 +43,26 @@ class Sender:
         myip = s.getsockname()[0]  # Get the local IP address assigned by Docker
         s.close()
         return myip
+    
+    def setMessage(self, msg: str): 
+        self.input = msg
+        self.packets = self.packetizer.parse(self.input)
+        k = len(self.packets)
+        m = k + math.floor(self.redundancy_factor * k)
+        self.k = k 
+        self.m = m
+        self.encoder = zfec.Encoder(k, m)
+        return uuid.uuid4()
+
 
     def getkm(self):
         return (self.k,self.m)
 
-    def encode(self):
+    def encode(self, msgID: uuid):
         print(f"[SENDER]: encoding...")
         dataPackets = self.encoder.encode(self.packets)
         for i in range(len(dataPackets)):
-            packet = Packet(dataPackets[i], i, self.sourcePort, self.destinationPort, LEN_DATA_PACKET, self.sourceIP, self.destinationIP, senderK=self.k, senderM=self.m)
+            packet = Packet(dataPackets[i], i, self.sourcePort, self.destinationPort, LEN_DATA_PACKET, self.sourceIP, self.destinationIP, senderK=self.k, senderM=self.m, msgID=msgID)
             self.packetQueue.append(packet)
 
     
@@ -68,12 +77,12 @@ class Sender:
         self.packetQueue = newQueue
 
 
-    def send(self, destination_ip): 
+    def send(self, destination_ip, msgID: uuid): 
         # Create a UDP socket
         sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         assert len(self.packets) != 0, "No packets to send."
         if (len(self.packetQueue) == 0):
-            self.encode()
+            self.encode(msgID)
 
         while self.packetQueue:
             packet = self.packetQueue.popleft()
