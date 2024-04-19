@@ -29,7 +29,7 @@ for node in "${node_names[@]}"; do
         continue
     fi
     # Copy routing tables and ipaddr.json to each node
-    docker cp ./topology-generator/routing_tables.json $node:/app/routing_tables.json
+    docker cp ./erdos-renyi-generator/routing_tables.json $node:/app/routing_tables.json
     if [ $? -ne 0 ]; then
         echo -e "\033[0;31mERROR: Failed to copy routing_tables.json to $node.\033[0m"
         continue

@@ -2,45 +2,11 @@ import heapq
 import json
 
 class APSP:
-    def __init__(self, inputFile, fn):
-        self.inputFile = inputFile+"_" + str(fn) + ".json"
+    def __init__(self, graph):
+        self.graph = graph
         self.outputFile = "routing_tables.json"
 
     def run(self):
-        # Load JSON data from a file
-        with open(self.inputFile, "r") as file:
-            connections_data = json.load(file)["connections"]
-
-        for connection in connections_data:
-            destn = connection["destination_id"]
-            src = connection["source_id"]
-            destn_num = int(destn[-1])
-            src_num = int(src[-1])
-            if (destn_num == 1):
-                connection["destination_id"] = "node"
-            else:
-                connection["destination_id"] = "node" + str(destn_num)
-            if (src_num == 1):
-                connection["source_id"] = "node"
-            else:
-                connection["source_id"] = "node" + str(src_num)
-
-
-
-        # Initialize an empty graph
-        graph = {}
-
-        # Populate the graph with connections
-        for connection in connections_data:
-            src = connection["source_id"]
-            dest = connection["destination_id"]
-            # Assuming weight of each edge is 1
-            if src not in graph:
-                graph[src] = {}
-            if dest not in graph:
-                graph[dest] = {}
-            graph[src][dest] = 1
-            graph[dest][src] = 1  # Assuming undirected graph; remove if directed
 
         def dijkstra(graph, start):
             distances = {vertex: float('infinity') for vertex in graph}
@@ -73,10 +39,10 @@ class APSP:
 
         # Generate routing tables for each node
         routing_tables = {}
-        for node in graph:
-            distances, predecessors = dijkstra(graph, node)
+        for node in self.graph:
+            distances, predecessors = dijkstra(self.graph, node)
             routing_table = {}
-            for destination in graph:
+            for destination in self.graph:
                 if destination != node:
                     next_hop = get_next_hop(predecessors, node, destination)
                     routing_table[destination] = {"distance": distances[destination], "next_hop": next_hop}
@@ -84,6 +50,8 @@ class APSP:
             
         with open(self.outputFile, "w") as f:
             json.dump(routing_tables, f)
+
+
 
 
 

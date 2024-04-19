@@ -21,11 +21,14 @@ case "$response" in
         ;;
 esac
 
-# Remove files starting with 'output'
-rm -f ./topology-generator/output*
+# Remove files starting with 'pdf'
+rm -f ./erdos-renyi-generator/erdos_renyi_graph.pdf
 
 # Remove routing_tables.json file
-rm -f ./topology-generator/routing_tables.json
+rm -f ./erdos-renyi-generator/routing_tables.json
+
+# Remove the ipaddr.json file
+rm -f ./ipaddr.json
 
 
 
