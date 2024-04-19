@@ -1,3 +1,5 @@
 ipaddr.json
 __pycache__/
 networksenv
+.DS_Store
+
