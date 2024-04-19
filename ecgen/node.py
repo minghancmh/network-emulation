@@ -21,10 +21,7 @@ def start_sender(args):
 def startRouter():
     print("router initializing...")
     routerNode = router.Router(0)
-    sendProc = Process(target=routerNode.send())
-    recvProc = Process(target=routerNode.recv())
-    sendProc.start()
-    recvProc.start()
+    print("router initialized")
 
 
 # CLI setup
@@ -32,7 +29,7 @@ def main():
     parser = argparse.ArgumentParser(description='Send or listen for messages.')
     parser.add_argument('--nodeType', help="Type of node (sender or receiver or router)", required=True)
     parser.add_argument('--bgrip', help="Border Gateway Router IP address (required if --nodeType is sender)")
-    parser.add_argument('--dest_ip', help='Destination IP address (required if --send is used)')
+    parser.add_argument('--dest_ip', help='Destination IP address')
     parser.add_argument('--msg', help='Message to send (required if --send is used)')
     parser.add_argument('--port', default=const.PORT, type=int, help='Destination port (default: 10000)')
     parser.add_argument('--listen', action='store_true', help='Start listening for messages')
