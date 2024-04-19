@@ -21,17 +21,23 @@ case "$response" in
         ;;
 esac
 
-# Remove files starting with 'output'
-rm -f ./topology-generator/output*
+# Remove files starting with 'pdf'
+rm -f ./erdos-renyi-generator/erdos_renyi_graph.pdf
 
 # Remove routing_tables.json file
-rm -f ./topology-generator/routing_tables.json
+rm -f ./erdos-renyi-generator/routing_tables.json
+
+# Remove the ipaddr.json file
+rm -f ./ipaddr.json
+
+
 
 # Shut down and remove containers created by Docker Compose
 docker-compose down
 
-# Remove docker image 
-# docker image rm networksconfig-node
+# Remove the docker images
+docker rmi network-emulation-router network-emulation-receiver network-emulation-sender
+
 
 # Optionally, remove other files or perform additional cleanup here
 
