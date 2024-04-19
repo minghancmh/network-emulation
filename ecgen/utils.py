@@ -1,5 +1,6 @@
 import zlib
 from const import TTL
+import uuid 
 class udphdr:
     def __init__(self, sourcePort, destinationPort, udpLength, checkSum):
         self.sourcePort = sourcePort
@@ -19,7 +20,7 @@ class Packet:
     This is more of a "struct" class created to abstract away packet logic.
     Each packet is assigned a packetNumber, which is required by the zfec decoder.
     """
-    def __init__(self, packetData: bytes, packetNumber: int, sourcePort: int, destinationPort: int, udpLength: int, sourceIP:str, destIP:str, senderM: int, senderK: int):
+    def __init__(self, packetData: bytes, packetNumber: int, sourcePort: int, destinationPort: int, udpLength: int, sourceIP:str, destIP:str, senderM: int, senderK: int, msgID: uuid):
         """
         packetData: data of the packet in bytes
         packetNumber: number of the packet
@@ -34,6 +35,7 @@ class Packet:
         self.iphdr = iphdr(sourceIP, destIP)
         self.senderM = senderM
         self.senderK = senderK
+        self.msgID = msgID
 
     def get_checksum(self, data):
         return zlib.crc32(data)

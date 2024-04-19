@@ -15,8 +15,9 @@ def start_sender(args):
     if args.msg == None: return
     with open(args.msg, "r") as f:
         message = f.read()
-    senderNode = sender.Sender(0.2, message, "1.1.1.1", args.dest_ip, args.port, args.port)
-    senderNode.send(args.bgrip)
+    senderNode = sender.Sender(0.2, "1.1.1.1", args.dest_ip, args.port, args.port)
+    msgID = senderNode.setMessage(message)
+    senderNode.send(args.bgrip, msgID)
     print(senderNode.getkm())
 
 def startRouter():
