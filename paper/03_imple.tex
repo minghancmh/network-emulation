@@ -24,7 +24,9 @@ In the context of emulating a router network for a networks project, employing t
 
 \subsection{Simulation Parameters}
 
-To simulate the experiment, we created a network of 50 nodes, with 
+To simulate the experiment, we created a network of 50 nodes using python's networkx, with $p=0.2$, where $p$ represents the probability of edge creation. We also attached a host to each of these routers, where a random selected host was to be our
+final $receiver$ node (acting as the unicast receiver), which decodes the transmitted packets. In each run of the experiment, we made sure to vary network topology by seeding it with a random time over 100 experiments with each value of $redundancyFactor$ and $packetDropRate$. In each experiment, a total of 
+1000 different messages were sent, each of 200 words long. 
 
 
 
