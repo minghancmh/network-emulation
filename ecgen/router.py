@@ -12,7 +12,7 @@ import time
 
 class Router:
     def __init__(self, probabilityDropRate):
-        time.sleep(10)
+        time.sleep(15)
         self.routerQueue = deque([]) 
         self.probabilityDropRate = probabilityDropRate
         self.myip = self.get_myip()
@@ -24,15 +24,17 @@ class Router:
             ipaddrStr = f.read()
         self.ipAddr = json.loads(ipaddrStr)
         self.myRouterNumber = self.get_myRouterNumber()
-        recvThread = Thread(target=self.recv())
-        sendThread = Thread(target=self.send())
+        recvThread = Thread(target=self.recv)
+        sendThread = Thread(target=self.send)
         recvThread.start()
         sendThread.start()
+        print("router finish init")
+
 
     def get_myRouterNumber(self):
         for rec_no, rec_ip in self.ipAddr.items():
             if rec_ip == self.myip:
-                return rec_no
+                return int(rec_no[-1])
         return -1
 
 
@@ -88,18 +90,23 @@ class Router:
     def send(self):
         while True:
             print("[Router]: sending...")
+            print(f"[Router.send]: Length of router queue = {len(self.routerQueue)}")
             if len(self.routerQueue) > 0:
+                print("[Router.send]: lenQueue > 1")
                 packet = self.routerQueue.popleft()
+                print(f"packet to send: {packet}")
                 if self.random_drop():
                     # packet has been dropped, do not forward
                     continue
                 # forward the packet
                 destIP = packet.iphdr.destIP
-                receiverNo = None
+                receiverName = None
                 for rec_no, rec_ip in self.ipAddr.items():
                     if rec_ip == destIP:
-                        receiverNo = rec_no
+                        receiverName = rec_no
                         break
+
+                receiverNo = int(receiverName[-1]) 
 
                 receiverRouter = receiverNo % NUM_ROUTERS + 1
 
@@ -107,6 +114,7 @@ class Router:
                     # send to receiver
                     sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                     try:
+                        print(f"[Router.send]: sending to {destIP}: {packet}")
                         # Send the message to the destination IP address and port
                         sender_socket.sendto(pickle.dumps(packet), (destIP, packet.udpheader.destinationPort))
                         print("Message sent successfully.")
@@ -120,7 +128,7 @@ class Router:
                     # send to next router
                     nextRouter = self.routingTable[myRouterName][receiverRouterName]["next_hop"]
                     nextRouterNumber = int(nextRouter[-1]) if nextRouter != "node" else 1
-                    nextRouterIP = self.ipAddr["networksconfig-router-"+str(nextRouterNumber)]
+                    nextRouterIP = self.ipAddr["network-emulation-router-"+str(nextRouterNumber)]
                     sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                     try:
                         # Send the message to the destination IP address and port
@@ -129,6 +137,7 @@ class Router:
                     finally:
                         # Close the socket
                         sender_socket.close()
+            time.sleep(1) # TODO: remove
 
 
     def displayRouterAttributes(self):
@@ -136,7 +145,6 @@ class Router:
         \nrouterIP: {self.myip}\
         \nprobabilityDropRate: {self.probabilityDropRate}\
         \n=============================\n
-
       """)
     
 

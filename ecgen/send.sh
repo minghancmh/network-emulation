@@ -10,8 +10,11 @@ echo "sending..."
 json_data=$(cat ipaddr.json)
 
 # Parse the JSON data and extract the IP address of router-1
-bgrip=$(echo "$json_data" | jq -r '.["networksconfig-router-1"]')
-dest=$(echo "$json_data" | jq -r '.["networksconfig-receiver-14"]')
+# change the names according to the names of the docker containers
+bgrip=$(echo "$json_data" | jq -r '.["network-emulation-router-1"]')
+dest=$(echo "$json_data" | jq -r '.["network-emulation-receiver-14"]')
+
+echo $dest
 
 
 python3 -u node.py --nodeType sender --bgrip $bgrip --msg sampleInput.txt --dest_ip $dest
