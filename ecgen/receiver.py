@@ -1,4 +1,5 @@
 import pickle
+import uuid
 import zfec
 from utils import Packet
 from typing import List
@@ -23,6 +24,7 @@ class Receiver:
         self.decodedPackets = None # The decoded packets to be passed to post process.
         self.packetizer = Packetizer()
         self.routerIp = routerIP
+        self.decodedUUIDs = []
         self.displayReceiverAttributes()
 
 
@@ -58,28 +60,16 @@ class Receiver:
             self.setSenderM(packet.senderM)
             self.setSenderK(packet.senderK)
             print(f'Received packet from {addr}: {packet}')
-            self.buffer.append(packet)
-            # if (len(self.buffer) >= self.minPackets):
-            try:
-                self.decode()
-                outmsg = self.postProcess()
-                print(f"[RECEIVER]: SUCCESSFULLY Decoded message: {outmsg}")
-            except:
-                print(f"[RECEIVER]: Failed to decode message, will try again...")
-
-    def send(destination_ip, packet: Packet):
-        # Create a UDP socket
-        sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:
-            # Send the message to the destination IP address and port
-            sender_socket.sendto(pickle.dumps(packet), (destination_ip, packet.udpheader.destinationPort))
-            print("Message sent successfully.")
-        finally:
-            # Close the socket
-            sender_socket.close()
-
-    def subscribe(self):
-        self.send(self.routerIp, "subscribe " + self.myip)
+            packetMsgID = packet.msgID
+            self.buffer.append(packet) if packetMsgID not in self.decodedUUIDs else None
+            if len(self.buffer) != 0:
+                try:
+                    self.decode()
+                    outmsg = self.postProcess()
+                    print(f"[RECEIVER]: SUCCESSFULLY Decoded message: {outmsg}")
+                    self.decodedUUIDs.append(packetMsgID)
+                except:
+                    print(f"[RECEIVER]: Failed to decode message, will try again...")
         
 
     def verify_checkSum(self, packet: Packet):
@@ -101,7 +91,7 @@ class Receiver:
         # Note that the value of m here should be the same as the value of m as the sender
         # k: len of the buffer
         k = len(self.buffer)
-        print("decoder km: ", (k, self.senderM))
+        # print("decoder km: ", (k, self.senderM))
         self.decoder = zfec.Decoder(k, self.senderM) 
         blocksReceived = []
         blockNums = []

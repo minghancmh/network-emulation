@@ -85,7 +85,7 @@ class Router:
                 self.routerQueue.append(packet)
                 self.condition.notify()
 
-            time.sleep(5)
+            time.sleep(1)
             
 
 
