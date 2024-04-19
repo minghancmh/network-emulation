@@ -1,4 +1,4 @@
-from const import DELIMITER
+from const import PADDING_BYTE
 class Packetizer:
     """
     The Packetizer class is reponsible for breaking down an input stream into chunks, and padding them to maxBlockSize.
@@ -22,12 +22,12 @@ class Packetizer:
     
     def pad(self, packet):
         assert len(packet) <= self.maxBlockSize
-        return packet + DELIMITER * (self.maxBlockSize - len(packet))
+        return packet + PADDING_BYTE * (self.maxBlockSize - len(packet))
     
     def postProcess(self, decodedPackets):
         ret = ""
         for packet in decodedPackets:
-            packet_str = packet.decode("utf-8").strip(DELIMITER)
+            packet_str = packet.decode("utf-8").strip(PADDING_BYTE)
             ret += packet_str
         return ret
 

@@ -17,13 +17,13 @@ class APSP:
             destn_num = int(destn[-1])
             src_num = int(src[-1])
             if (destn_num == 1):
-                connection["destination_id"] = "test-cluster-worker"
+                connection["destination_id"] = "node"
             else:
-                connection["destination_id"] = "test-cluster-worker" + str(destn_num)
+                connection["destination_id"] = "node" + str(destn_num)
             if (src_num == 1):
-                connection["source_id"] = "test-cluster-worker"
+                connection["source_id"] = "node"
             else:
-                connection["source_id"] = "test-cluster-worker" + str(src_num)
+                connection["source_id"] = "node" + str(src_num)
 
 
 
