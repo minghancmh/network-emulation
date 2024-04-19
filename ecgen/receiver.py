@@ -17,12 +17,14 @@ class Receiver:
         self.buffer: List[Packet] = [] # A list of packets that the receiver has received
         self.decoder = None # Note that the decoder needs to be instantiated every decode call because k,m are dependent on the packets received
         self.senderM = None # m value in the encoder of the sender
-        self.myip = None # IP of the receiver node
+        self.myip = self.get_myip() # IP of the receiver node
         self.myport = None # Port of the receiver node
         self.minPackets = None # k value in the encoder of the sender. The receiver must receive at least k packets, or decoding will fail.
-        self.decodedPackets = None
+        self.decodedPackets = None # The decoded packets to be passed to post process.
         self.packetizer = Packetizer()
         self.routerIp = routerIP
+        self.displayReceiverAttributes()
+
 
     def setSenderK(self, k):
         self.minPackets = k
@@ -52,14 +54,25 @@ class Receiver:
         # sock.setblocking(0)
         while True: 
             data, addr = sock.recvfrom(LEN_DATA_TO_RECV)
-            print(f'Received packet from {addr}: {pickle.loads(data)}')
+            packet = pickle.loads(data)
+            self.setSenderM(packet.senderM)
+            self.setSenderK(packet.senderK)
+            print(f'Received packet from {addr}: {packet}')
+            self.buffer.append(packet)
+            # if (len(self.buffer) >= self.minPackets):
+            try:
+                self.decode()
+                outmsg = self.postProcess()
+                print(f"[RECEIVER]: SUCCESSFULLY Decoded message: {outmsg}")
+            except:
+                print(f"[RECEIVER]: Failed to decode message, will try again...")
 
-    def send(destination_ip, message):
+    def send(destination_ip, packet: Packet):
         # Create a UDP socket
         sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
             # Send the message to the destination IP address and port
-            sender_socket.sendto(message.encode(), (destination_ip, PORT))
+            sender_socket.sendto(pickle.dumps(packet), (destination_ip, packet.udpheader.destinationPort))
             print("Message sent successfully.")
         finally:
             # Close the socket
@@ -84,10 +97,12 @@ class Receiver:
         print(f"[RECEIVER]: decoding...")
         if len(self.buffer) < self.minPackets:
             raise Exception(f"[RECEIVER]: DECODING FAIL. Received {len(self.buffer)} packets at the receiver. Need at least {self.minPackets} packets.")
+        assert self.senderM != None, "SenderM not set. Please set the senderM value."
         # Note that the value of m here should be the same as the value of m as the sender
         # k: len of the buffer
         k = len(self.buffer)
-        self.decoder = zfec.Decoder(k, self.senderM)
+        print("decoder km: ", (k, self.senderM))
+        self.decoder = zfec.Decoder(k, self.senderM) 
         blocksReceived = []
         blockNums = []
 
@@ -98,6 +113,7 @@ class Receiver:
 
 
         decoded = self.decoder.decode(blocksReceived, blockNums)
+        # print(decoded)
 
         self.buffer: List[Packet] = [] # clear the buffer
         self.decoder = None # clear the decoder 
@@ -105,11 +121,24 @@ class Receiver:
         self.decodedPackets = decoded[:self.minPackets]
 
         return decoded
+
     
     def postProcess(self):
         # this function assumes that decode has already been called. This is just to derive the original text file.
         assert self.decodedPackets != None
         return self.packetizer.postProcess(self.decodedPackets)
+    
+
+    def displayReceiverAttributes(self):
+        print(f"""\n=====RECEIVER ATTRIBUTES=====\
+        \n myip: {self.myip}\
+        \n myport: {self.myport}\
+        \n minPackets: {self.minPackets}\
+        \n senderM: {self.senderM}\
+        \n routerIp: {self.routerIp}\
+        \n=============================\n
+      """)
+                
 
 
 
