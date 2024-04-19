@@ -27,11 +27,14 @@ rm -f ./topology-generator/output*
 # Remove routing_tables.json file
 rm -f ./topology-generator/routing_tables.json
 
+
+
 # Shut down and remove containers created by Docker Compose
 docker-compose down
 
-# Remove docker image 
-# docker image rm networksconfig-node
+# Remove the docker images
+docker rmi network-emulation-router network-emulation-receiver network-emulation-sender
+
 
 # Optionally, remove other files or perform additional cleanup here
 

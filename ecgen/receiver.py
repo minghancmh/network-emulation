@@ -65,7 +65,7 @@ class Receiver:
                 outmsg = self.postProcess()
                 print(f"[RECEIVER]: SUCCESSFULLY Decoded message: {outmsg}")
             except:
-                print(f"[RECEIVER]: Failed to decode message, will try again...")
+                print(f"[RECEIVER]: Don't have enough packets to decode message, will try again...")
 
     def send(destination_ip, packet: Packet):
         # Create a UDP socket
