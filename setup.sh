@@ -12,30 +12,36 @@ TOPO_CONFIG_FILE="./topology-generator/config"
 DOCKER_COMPOSE_FILE="docker-compose.yaml"
 
 
-# Count the number of worker nodes
-replicas=$(yq e '.services.node.deploy.replicas' "$DOCKER_COMPOSE_FILE")
-
+replicas=$(yq e '.services.router.deploy.replicas' "$DOCKER_COMPOSE_FILE")
 
 # Extract the "routers" value using jq
 routers=$(jq -r '.routers' "$TOPO_CONFIG_FILE")
 echo "Num routers generated in topology generator: $routers"
 echo "Num replicas in docker-compose.yaml: $replicas"
 
+if [ $routers == "null" ]; then
+    echo "ERROR: Are you sure you have installed jq?"
+    exit 1
+fi 
+
+if [ $replicas == "null" ]; then
+    echo "ERROR: Are you sure you have installed yq?"
+    exit 1
+fi
+
 # Check if the "routers" value is equal to the number of worker nodes in kind.
 if [ ! $routers -eq $replicas ]; then
-    echo "ERROR: worker_count in kind_config does not match the number of routers in topology-generator"
+    echo "ERROR: worker_count in docker-compose does not match the number of routers in topology-generator"
     exit 1
 fi
 
 
 # Builds docker image and spins up containers
-cd node
 docker-compose up -d
 
 
 # Generate the topology information
 echo "Generating topology information."
-cd .. 
 cd topology-generator && ./gen.sh
 cd ..
 

@@ -1,4 +1,5 @@
 # https://github.com/tahoe-lafs/zfec
+import pickle
 import zfec
 import math
 from packetizer import Packetizer
@@ -6,6 +7,7 @@ from collections import deque
 from utils import Packet
 from const import LEN_DATA_PACKET
 import socket
+from const import PORT 
 
 
 class Sender:
@@ -18,14 +20,14 @@ class Sender:
         print("[SENDER]: Initializing sender...")
         self.redundancy_factor = redundancy_factor
         self.input = input 
-        self.senderIP = senderIP
+        self.senderIP = self.get_myip()
         self.sourcePort = sourcePort
         self.destinationPort = destinationPort
         self.sourceIP = self.senderIP
         self.destinationIP = destinationIP
-
         self.packetizer = Packetizer(LEN_DATA_PACKET)
         self.packets = self.packetizer.parse(self.input)
+        self.borderGatewayRouterIP = None
 
         k = len(self.packets)
         m = k + math.floor(self.redundancy_factor * k)
@@ -34,6 +36,16 @@ class Sender:
         self.encoder = zfec.Encoder(k, m)
         self.packetQueue: deque[Packet] = deque([])
 
+        self.displaySenderAttributes()
+
+    def get_myip(self):
+        # Create a UDP socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))  # Connect to a known external server (Google DNS)
+        myip = s.getsockname()[0]  # Get the local IP address assigned by Docker
+        s.close()
+        return myip
+
     def getkm(self):
         return (self.k,self.m)
 
@@ -41,11 +53,10 @@ class Sender:
         print(f"[SENDER]: encoding...")
         dataPackets = self.encoder.encode(self.packets)
         for i in range(len(dataPackets)):
-            packet = Packet(dataPackets[i], i, self.sourcePort, self.destinationPort, LEN_DATA_PACKET, self.sourceIP, self.destinationIP)
+            packet = Packet(dataPackets[i], i, self.sourcePort, self.destinationPort, LEN_DATA_PACKET, self.sourceIP, self.destinationIP, senderK=self.k, senderM=self.m)
             self.packetQueue.append(packet)
 
-
-
+    
 
     def printAllPacketsInQueue(self):
         # WARNING: This function is incredibly inefficient and should not be used. It is to be used only for debugging purposes.
@@ -57,12 +68,22 @@ class Sender:
         self.packetQueue = newQueue
 
 
-    def send(self, packet:Packet):
-        # input sending logic to other nodes here
-        # feel free to add class attributes such as next nodes IP_addrs
-        print(f"[SENDER]: sender sending packet...")
-        packet.printPacket()
-        pass
+    def send(self, destination_ip): 
+        # Create a UDP socket
+        sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        assert len(self.packets) != 0, "No packets to send."
+        if (len(self.packetQueue) == 0):
+            self.encode()
+
+        while self.packetQueue:
+            packet = self.packetQueue.popleft()
+            packet.printPacket()
+            # Send the message to the destination IP address and port
+            sender_socket.sendto(pickle.dumps(packet), (destination_ip, PORT))
+            print("Message sent successfully.")
+
+        sender_socket.close()
+
 
     def displaySenderAttributes(self):
         print(f"""\n=====SENDER ATTRIBUTES=====\
@@ -70,7 +91,9 @@ class Sender:
       \nsenderIP: {self.senderIP}\
       \ndestinationIP: {self.destinationIP}\
       \nsourcePort: {self.sourcePort}\
-      \ndestinationPort: {self.destinationPort}
+      \ndestinationPort: {self.destinationPort}\
+        \n=============================\n
+
       """)
 
     
