@@ -10,8 +10,9 @@ services:
       dockerfile: sender.Dockerfile
     deploy:
       replicas: 1
+    stdin_open: true
+    tty: true
     network_mode: bridge
-    # Add any other configurations specific to services1
 
   router:
     build:
@@ -19,13 +20,12 @@ services:
     deploy:
       replicas: 5
     network_mode: bridge
-    # Add any other configurations specific to services2
 
   receiver:
     build:
       dockerfile: receiver.Dockerfile
     deploy:
-      replicas: 5
+      replicas: 15
     network_mode: bridge
-    # Add any other configurations specific to node3
+
 
