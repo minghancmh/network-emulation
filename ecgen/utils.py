@@ -1,4 +1,5 @@
 import zlib
+from const import TTL
 class udphdr:
     def __init__(self, sourcePort, destinationPort, udpLength, checkSum):
         self.sourcePort = sourcePort
@@ -10,6 +11,7 @@ class iphdr:
     def __init__(self, sourceIP, destIP):
         self.sourceIP = sourceIP
         self.destIP = destIP
+        self.TTL = TTL
 
 
 class Packet:

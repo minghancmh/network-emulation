@@ -1,17 +1,31 @@
-version: '3.8'
-
-services:
-  node:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    # Set the number of desired replicas (containers)
-    # You can adjust the `replicas` value as needed
-    deploy:
-      replicas: 5
-    network_mode: bridge
-    # Optionally, you can set environment variables or other configurations here
-
 
 # docker-compose up -d
 # docker-compose logs <service-name>
+
+version: '3.8'
+
+services:
+  sender:
+    build:
+      dockerfile: sender.Dockerfile
+    deploy:
+      replicas: 1
+    network_mode: bridge
+    # Add any other configurations specific to services1
+
+  router:
+    build:
+      dockerfile: router.Dockerfile
+    deploy:
+      replicas: 5
+    network_mode: bridge
+    # Add any other configurations specific to services2
+
+  receiver:
+    build:
+      dockerfile: receiver.Dockerfile
+    deploy:
+      replicas: 5
+    network_mode: bridge
+    # Add any other configurations specific to node3
+

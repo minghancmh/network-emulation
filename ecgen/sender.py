@@ -1,4 +1,5 @@
 # https://github.com/tahoe-lafs/zfec
+import pickle
 import zfec
 import math
 from packetizer import Packetizer
@@ -6,6 +7,7 @@ from collections import deque
 from utils import Packet
 from const import LEN_DATA_PACKET
 import socket
+from const import PORT 
 
 
 class Sender:
@@ -44,8 +46,7 @@ class Sender:
             packet = Packet(dataPackets[i], i, self.sourcePort, self.destinationPort, LEN_DATA_PACKET, self.sourceIP, self.destinationIP)
             self.packetQueue.append(packet)
 
-
-
+    
 
     def printAllPacketsInQueue(self):
         # WARNING: This function is incredibly inefficient and should not be used. It is to be used only for debugging purposes.
@@ -57,12 +58,16 @@ class Sender:
         self.packetQueue = newQueue
 
 
-    def send(self, packet:Packet):
-        # input sending logic to other nodes here
-        # feel free to add class attributes such as next nodes IP_addrs
-        print(f"[SENDER]: sender sending packet...")
-        packet.printPacket()
-        pass
+    def send(self, destination_ip, message:Packet):
+        # Create a UDP socket
+        sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            # Send the message to the destination IP address and port
+            sender_socket.sendto(pickle.dumps(message), (destination_ip, PORT))
+            print("Message sent successfully.")
+        finally:
+            # Close the socket
+            sender_socket.close()
 
     def displaySenderAttributes(self):
         print(f"""\n=====SENDER ATTRIBUTES=====\

@@ -12,7 +12,6 @@ TOPO_CONFIG_FILE="./topology-generator/config"
 DOCKER_COMPOSE_FILE="docker-compose.yaml"
 
 
-# Count the number of worker nodes
 replicas=$(yq e '.services.node.deploy.replicas' "$DOCKER_COMPOSE_FILE")
 
 
@@ -29,13 +28,11 @@ fi
 
 
 # Builds docker image and spins up containers
-cd node
 docker-compose up -d
 
 
 # Generate the topology information
 echo "Generating topology information."
-cd .. 
 cd topology-generator && ./gen.sh
 cd ..
 

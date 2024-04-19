@@ -1,26 +1,73 @@
+import pickle
 import zfec
 from utils import Packet
 from typing import List
 import zlib
+import socket
+import struct
+import select
+import argparse
 from packetizer import Packetizer
+from const import LEN_DATA_TO_RECV, PORT
+
 
 class Receiver:
-    def __init__(self, senderK:int, senderM: int, receiverNodeIP: str):
+    def __init__(self, routerIP: str) :
         print(f"[RECEIVER]: Initializing receiver...")
         self.buffer: List[Packet] = [] # A list of packets that the receiver has received
         self.decoder = None # Note that the decoder needs to be instantiated every decode call because k,m are dependent on the packets received
-        self.senderM = senderM # m value in the encoder of the sender
-        self.myip = receiverNodeIP # IP of the receiver node
-        self.minPackets = senderK # k value in the encoder of the sender. The receiver must receive at least k packets, or decoding will fail.
+        self.senderM = None # m value in the encoder of the sender
+        self.myip = None # IP of the receiver node
+        self.myport = None # Port of the receiver node
+        self.minPackets = None # k value in the encoder of the sender. The receiver must receive at least k packets, or decoding will fail.
         self.decodedPackets = None
         self.packetizer = Packetizer()
+        self.routerIp = routerIP
+
+    def setSenderK(self, k):
+        self.minPackets = k
+
+    def setSenderM(self, m):
+        self.senderM = m
+
+    def get_myip(self):
+        # Create a UDP socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))  # Connect to a known external server (Google DNS)
+        myip = s.getsockname()[0]  # Get the local IP address assigned by Docker
+        s.close()
+        return myip
 
     def recv(self):
         # This function should append the packet to the buffer of the receiver
         # This function should verify that it is the correct destination by checking the packet header
         # It should also verify the udphdr checksum and ignore the packet if the verify_checksum fails
         # Once it passes all these tests, append it to the buffer of the receiver
-        pass
+        self.myip = self.get_myip()
+        self.myport = PORT
+        print(f"[RECEIVER]: Listening on {self.myip}:{self.myport}...")
+        # Create a UDP socket for unicast reception
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind((self.myip, self.myport))
+        # sock.setblocking(0)
+        while True: 
+            data, addr = sock.recvfrom(LEN_DATA_TO_RECV)
+            print(f'Received packet from {addr}: {pickle.loads(data)}')
+
+    def send(destination_ip, message):
+        # Create a UDP socket
+        sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            # Send the message to the destination IP address and port
+            sender_socket.sendto(message.encode(), (destination_ip, PORT))
+            print("Message sent successfully.")
+        finally:
+            # Close the socket
+            sender_socket.close()
+
+    def subscribe(self):
+        self.send(self.routerIp, "subscribe " + self.myip)
+        
 
     def verify_checkSum(self, packet: Packet):
         hdr = packet.udpheader
