@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # Make sure we have permissions for all the files
-chmod +x ./topology-generator/gen.sh
+chmod +x ./erdos-renyi-generator/gen.sh
 chmod +x ./clean.sh
 chmod +x ./applyRoutingInfo.sh
 chmod +x ./getip.sh
 
-TOPO_CONFIG_FILE="./topology-generator/config"
+TOPO_CONFIG_FILE="./erdos-renyi-generator/config"
+
 
 # Path to your docker-compose file 
 DOCKER_COMPOSE_FILE="docker-compose.yaml"
@@ -31,7 +32,7 @@ fi
 
 # Check if the "routers" value is equal to the number of worker nodes in kind.
 if [ ! $routers -eq $replicas ]; then
-    echo -e "\033[0;31mERROR: worker_count in docker-compose does not match the number of routers in topology-generator\033[0m"
+    echo -e "\033[0;31mERROR: worker_count in docker-compose does not match the number of routers in erdos-renyi-generator\033[0m"
     exit 1
 fi
 
@@ -43,8 +44,8 @@ if [ $? -ne 0 ]; then
 fi
 
 # Generate the topology information
-echo "Generating topology information."
-cd topology-generator && ./gen.sh
+echo "Generating erdos-renyi topology"
+cd erdos-renyi-generator && ./gen.sh
 if [ $? -ne 0 ]; then
     echo -e "\033[0;31mERROR: Failed to generate topology information.\033[0m"
     exit 1
