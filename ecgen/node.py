@@ -3,7 +3,7 @@ import argparse
 import const, sender, receiver, router
 
 from multiprocessing import Process
-
+import os
 import time
 
 def infinite_loop():
@@ -12,6 +12,7 @@ def infinite_loop():
 
 def start_sender(args):
     print("sender initializing...")
+    if args.msg == None: return
     with open(args.msg, "r") as f:
         message = f.read()
     senderNode = sender.Sender(0.2, message, "1.1.1.1", args.dest_ip, args.port, args.port)
@@ -35,6 +36,10 @@ def main():
     parser.add_argument('--listen', action='store_true', help='Start listening for messages')
     args = parser.parse_args()
     assert args.nodeType in ["sender", "receiver", "router"], "Invalid node type. Must be sender, receiver, or router."
+
+    while not os.path.exists('/app/routing_tables.json'):
+        print("Waiting for the ipaddr and routing_tables to be loaded into container...")
+        time.sleep(2)
 
     if args.nodeType == "router":
         print("router initializing...")

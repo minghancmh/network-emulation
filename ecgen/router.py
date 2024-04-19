@@ -12,7 +12,6 @@ import time
 
 class Router:
     def __init__(self, probabilityDropRate):
-        time.sleep(15)
         self.routerQueue = deque([]) 
         self.probabilityDropRate = probabilityDropRate
         self.myip = self.get_myip()
