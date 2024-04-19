@@ -5,7 +5,7 @@ from utils import Packet
 from collections import deque
 import random
 import socket
-from threading import Thread, Lock
+from threading import Thread, Lock, Condition
 import json 
 import time
 
@@ -22,6 +22,7 @@ class Router:
         with open("ipaddr.json", 'r') as f:
             ipaddrStr = f.read()
         self.ipAddr = json.loads(ipaddrStr)
+        self.condition = Condition()
         self.myRouterNumber = self.get_myRouterNumber()
         recvThread = Thread(target=self.recv)
         sendThread = Thread(target=self.send)
@@ -80,62 +81,68 @@ class Router:
                 # packet has been corrupted, do not forward
                 print("packet corrupted")
                 continue
-            self.routerQueue.append(packet)
-            print(self.routerQueue)
-            time.sleep(1)
+            with self.condition:
+                self.routerQueue.append(packet)
+                self.condition.notify()
+
+            time.sleep(5)
             
 
 
     def send(self):
         while True:
             print("[Router]: sending...")
+            with self.condition:
+                while len(self.routerQueue) == 0:
+                    print("sending mechanism sleep...")
+                    self.condition.wait()
+            # if len(self.routerQueue) > 0:
             print(f"[Router.send]: Length of router queue = {len(self.routerQueue)}")
-            if len(self.routerQueue) > 0:
-                print("[Router.send]: lenQueue > 1")
-                packet = self.routerQueue.popleft()
-                print(f"packet to send: {packet}")
-                if self.random_drop():
-                    # packet has been dropped, do not forward
-                    continue
-                # forward the packet
-                destIP = packet.iphdr.destIP
-                receiverName = None
-                for rec_no, rec_ip in self.ipAddr.items():
-                    if rec_ip == destIP:
-                        receiverName = rec_no
-                        break
+            assert len(self.routerQueue) > 0, "Because of the condition varialbe, the len of the queue here should be guaranteed to be greater than 0"
+            packet = self.routerQueue.popleft()
+            print(f"packet to send: {packet}")
+            if self.random_drop():
+                # packet has been dropped, do not forward
+                continue
+            # forward the packet
+            destIP = packet.iphdr.destIP
+            receiverName = None
+            for rec_no, rec_ip in self.ipAddr.items():
+                if rec_ip == destIP:
+                    receiverName = rec_no
+                    break
 
-                receiverNo = int(receiverName[-1]) 
+            receiverNo = int(receiverName[-1]) 
 
-                receiverRouter = receiverNo % NUM_ROUTERS + 1
+            receiverRouter = receiverNo % NUM_ROUTERS + 1
 
-                if receiverRouter == self.myRouterNumber:
-                    # send to receiver
-                    sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                    try:
-                        print(f"[Router.send]: sending to {destIP}: {packet}")
-                        # Send the message to the destination IP address and port
-                        sender_socket.sendto(pickle.dumps(packet), (destIP, packet.udpheader.destinationPort))
-                        print("Message sent successfully.")
-                    finally:
-                        # Close the socket
-                        sender_socket.close()
-                else:
-                    myRouterName = "node" + str(self.myRouterNumber) if self.myRouterNumber != 1 else "node"
-                    receiverRouterName = "node" + str(receiverRouter) if receiverRouter != 1 else "node"
+            if receiverRouter == self.myRouterNumber:
+                # send to receiver
+                sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                try:
+                    print(f"[Router.send]: sending to {destIP}: {packet}")
+                    # Send the message to the destination IP address and port
+                    sender_socket.sendto(pickle.dumps(packet), (destIP, packet.udpheader.destinationPort))
+                    print("Message sent successfully.")
+                finally:
+                    # Close the socket
+                    sender_socket.close()
+            else:
+                myRouterName = "node" + str(self.myRouterNumber) if self.myRouterNumber != 1 else "node"
+                receiverRouterName = "node" + str(receiverRouter) if receiverRouter != 1 else "node"
 
-                    # send to next router
-                    nextRouter = self.routingTable[myRouterName][receiverRouterName]["next_hop"]
-                    nextRouterNumber = int(nextRouter[-1]) if nextRouter != "node" else 1
-                    nextRouterIP = self.ipAddr["network-emulation-router-"+str(nextRouterNumber)]
-                    sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                    try:
-                        # Send the message to the destination IP address and port
-                        sender_socket.sendto(pickle.dumps(packet), (nextRouterIP, packet.udpheader.destinationPort))
-                        print("Message sent successfully.")
-                    finally:
-                        # Close the socket
-                        sender_socket.close()
+                # send to next router
+                nextRouter = self.routingTable[myRouterName][receiverRouterName]["next_hop"]
+                nextRouterNumber = int(nextRouter[-1]) if nextRouter != "node" else 1
+                nextRouterIP = self.ipAddr["network-emulation-router-"+str(nextRouterNumber)]
+                sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                try:
+                    # Send the message to the destination IP address and port
+                    sender_socket.sendto(pickle.dumps(packet), (nextRouterIP, packet.udpheader.destinationPort))
+                    print("Message sent successfully.")
+                finally:
+                    # Close the socket
+                    sender_socket.close()
             time.sleep(1) # TODO: remove
 
 

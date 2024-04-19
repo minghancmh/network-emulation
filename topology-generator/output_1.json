@@ -15,14 +15,14 @@
         },
         {
             "channel_id": "channel1",
-            "destination_id": "node3",
+            "destination_id": "node5",
             "destination_interface": "interface1",
             "source_id": "node1",
             "source_interface": "interface1"
         },
         {
             "channel_id": "channel1",
-            "destination_id": "node3",
+            "destination_id": "node5",
             "destination_interface": "interface1",
             "source_id": "node2",
             "source_interface": "interface1"
@@ -57,7 +57,7 @@
         },
         {
             "channel_id": "channel1",
-            "destination_id": "node3",
+            "destination_id": "node5",
             "destination_interface": "interface1",
             "source_id": "node4",
             "source_interface": "interface1"
@@ -71,7 +71,7 @@
         },
         {
             "channel_id": "channel1",
-            "destination_id": "node3",
+            "destination_id": "node1",
             "destination_interface": "interface1",
             "source_id": "node5",
             "source_interface": "interface1"
@@ -86,8 +86,8 @@
             ],
             "node_id": "node1",
             "node_type": "router",
-            "x-coord": "8.82",
-            "y-coord": "5.55"
+            "x-coord": "4.79",
+            "y-coord": "5.15"
         },
         {
             "interfaces": [
@@ -97,8 +97,8 @@
             ],
             "node_id": "node2",
             "node_type": "router",
-            "x-coord": "6.33",
-            "y-coord": "6.47"
+            "x-coord": "1.72",
+            "y-coord": "4.74"
         },
         {
             "interfaces": [
@@ -108,8 +108,8 @@
             ],
             "node_id": "node3",
             "node_type": "router",
-            "x-coord": "7.37",
-            "y-coord": "4.45"
+            "x-coord": "6.88",
+            "y-coord": "5.64"
         },
         {
             "interfaces": [
@@ -119,8 +119,8 @@
             ],
             "node_id": "node4",
             "node_type": "router",
-            "x-coord": "8.78",
-            "y-coord": "5.67"
+            "x-coord": "4.47",
+            "y-coord": "4.17"
         },
         {
             "interfaces": [
@@ -130,8 +130,8 @@
             ],
             "node_id": "node5",
             "node_type": "router",
-            "x-coord": "1.31",
-            "y-coord": "4.57"
+            "x-coord": "2.74",
+            "y-coord": "5.61"
         }
     ]
 }
