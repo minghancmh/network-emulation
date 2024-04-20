@@ -1,4 +1,4 @@
 {
-  "routers": 5,
-  "p-edge": 0.4
+  "routers": 20,
+  "p-edge": 0.2
 }

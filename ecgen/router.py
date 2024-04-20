@@ -28,7 +28,9 @@ class Router:
         sendThread = Thread(target=self.send)
         recvThread.start()
         sendThread.start()
+        print("router drop rate: ", self.probabilityDropRate)
         print("router finish init")
+
 
 
     def get_myRouterNumber(self):
@@ -84,8 +86,6 @@ class Router:
             with self.condition:
                 self.routerQueue.append(packet)
                 self.condition.notify()
-
-            time.sleep(1)
             
 
 
@@ -143,7 +143,7 @@ class Router:
                 finally:
                     # Close the socket
                     sender_socket.close()
-            time.sleep(1) # TODO: remove
+
 
 
     def displayRouterAttributes(self):

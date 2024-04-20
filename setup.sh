@@ -6,6 +6,7 @@ chmod +x ./clean.sh
 chmod +x ./applyRoutingInfo.sh
 chmod +x ./getip.sh
 
+
 TOPO_CONFIG_FILE="./erdos-renyi-generator/config"
 
 

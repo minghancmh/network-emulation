@@ -7,6 +7,7 @@ dependencies:
   - pip:
       - reedsolo==1.7.0
       - zfec==1.5.7.4
+      - colorama==0.3.7
       # - autoconf==2.71=pl5340h80987f9_0
       # - python==3.12.2=h99e199e_0
       # - bzip2==1.0.8=h80987f9_5
