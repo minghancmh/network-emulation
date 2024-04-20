@@ -8,7 +8,8 @@ from collections import deque
 from utils import Packet
 from const import LEN_DATA_PACKET
 import socket
-from const import PORT 
+from const import PORT, LOG_FILE_PATH
+import sys
 
 
 class Sender:
@@ -33,7 +34,6 @@ class Sender:
         self.m = 0 
         self.encoder = None 
         self.packetQueue: deque[Packet] = deque([])
-
         self.displaySenderAttributes()
 
     def get_myip(self):
@@ -90,7 +90,6 @@ class Sender:
             # Send the message to the destination IP address and port
             sender_socket.sendto(pickle.dumps(packet), (destination_ip, PORT))
             print("Message sent successfully.")
-
         sender_socket.close()
 
 

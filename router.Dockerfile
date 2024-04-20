@@ -1,6 +1,9 @@
 # Dockerfile for source node
 FROM continuumio/miniconda3
 
+ARG packet_drop_rate
+ENV PACKET_DROP_RATE=$packet_drop_rate
+RUN echo "Packet drop rate is set to ${PACKET_DROP_RATE}"
 # Set working directory
 WORKDIR /app
 
@@ -24,7 +27,7 @@ SHELL ["conda", "run", "-n", "netsim", "/bin/bash", "-c"]
 
 # Run the source node script
 RUN pip install zfec 
-ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "netsim", "python3", "-u", "node.py", "--nodeType", "router"]
+ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "netsim", "python3", "-u", "node.py", "--nodeType", "router", "--router_drop_rate", "0.11111"]
 
 
 

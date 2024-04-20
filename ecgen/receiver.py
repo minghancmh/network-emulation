@@ -1,15 +1,15 @@
 import pickle
-import uuid
+import time
 import zfec
 from utils import Packet
 from typing import List
 import zlib
 import socket
-import struct
-import select
-import argparse
+import json
 from packetizer import Packetizer
-from const import LEN_DATA_TO_RECV, PORT
+from colorama import Fore
+import sys
+from const import LEN_DATA_TO_RECV, PORT, LOG_FILE_PATH
 
 
 class Receiver:
@@ -25,7 +25,12 @@ class Receiver:
         self.packetizer = Packetizer()
         self.routerIp = routerIP
         self.decodedUUIDs = []
+        self.numSuccessfullyDecodedMsgs = 0 
+        self.timeout = 5
+        self.currentMessageID = None
         self.displayReceiverAttributes()
+
+    
 
 
     def setSenderK(self, k):
@@ -41,35 +46,71 @@ class Receiver:
         myip = s.getsockname()[0]  # Get the local IP address assigned by Docker
         s.close()
         return myip
+    
+    def log_num_decoded_msgs(self):
+        print(f"{Fore.RED}[RECEIVER]:LOGGING{self.numSuccessfullyDecodedMsgs} {Fore.RESET}")
+        with open(LOG_FILE_PATH, "a") as f:
+            f.write(f"Num successfully decoded msgs: {self.numSuccessfullyDecodedMsgs}*\n")
 
     def recv(self):
         # This function should append the packet to the buffer of the receiver
         # This function should verify that it is the correct destination by checking the packet header
         # It should also verify the udphdr checksum and ignore the packet if the verify_checksum fails
         # Once it passes all these tests, append it to the buffer of the receiver
-        self.myip = self.get_myip()
-        self.myport = PORT
-        print(f"[RECEIVER]: Listening on {self.myip}:{self.myport}...")
-        # Create a UDP socket for unicast reception
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.bind((self.myip, self.myport))
-        # sock.setblocking(0)
-        while True: 
-            data, addr = sock.recvfrom(LEN_DATA_TO_RECV)
-            packet = pickle.loads(data)
-            self.setSenderM(packet.senderM)
-            self.setSenderK(packet.senderK)
-            print(f'Received packet from {addr}: {packet}')
-            packetMsgID = packet.msgID
-            self.buffer.append(packet) if packetMsgID not in self.decodedUUIDs else None
-            if len(self.buffer) != 0:
-                try:
-                    self.decode()
-                    outmsg = self.postProcess()
-                    print(f"[RECEIVER]: SUCCESSFULLY Decoded message: {outmsg}")
-                    self.decodedUUIDs.append(packetMsgID)
-                except:
-                    print(f"[RECEIVER]: Failed to decode message, will try again...")
+        with open("ipaddr.json", "r") as f:
+            ipaddr = json.loads(f.read())
+        recv_eightip = ipaddr["network-emulation-receiver-8"] # TODO: shouldn't hardcode this
+        try:
+            self.myip = self.get_myip()
+            self.myport = PORT
+            print(f"[RECEIVER]: Listening on {self.myip}:{self.myport}...")
+            # Create a UDP socket for unicast reception
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.bind((self.myip, self.myport))
+            sock.settimeout(30) # TODO: set to 120
+
+            while True: 
+                try: 
+                    data, addr = sock.recvfrom(LEN_DATA_TO_RECV)
+                    packet = pickle.loads(data)
+                    self.setSenderM(packet.senderM)
+                    self.setSenderK(packet.senderK)
+                    print(f'Received packet from {addr}: {packet}')
+                    if self.currentMessageID == None:
+                        self.currentMessageID = packet.msgID
+                    elif self.currentMessageID != packet.msgID:
+                        # if the incoming message id (packet.msgID) is different from the current message id, then reset the buffer and decoded packets
+                        # otherwise if we have a buffer of 2 different types of msgID, we confused the decoder and the decoder will block 
+                        self.currentMessageID = packet.msgID
+                        self.buffer = []
+                        self.decodedPackets = []
+                    packetMsgID = packet.msgID
+
+                    if packetMsgID not in self.decodedUUIDs:
+                        self.buffer.append(packet) 
+                    if len(self.buffer) != 0:
+                        try:
+                            self.decode()
+                            outmsg = self.postProcess()
+                            print(f"[RECEIVER]: SUCCESSFULLY Decoded message: {outmsg}")
+                            self.decodedUUIDs.append(packetMsgID)
+                            self.numSuccessfullyDecodedMsgs += 1
+                            print(f"{Fore.GREEN}[RECEIVER]: Num successfully decoded messages: {self.numSuccessfullyDecodedMsgs} {Fore.RESET}")
+                        except:
+                            print(f"[RECEIVER]: Cannot decode message, not enough packet, will try again...")
+                    sock.settimeout(self.timeout)
+                except socket.timeout:
+                    if self.myip == recv_eightip:
+                        print(f"[RECEIVER]: Timeout occurred, no messages received. Exiting...")
+                        self.log_num_decoded_msgs()
+                        break
+        except socket.timeout:
+            print(f"[RECEIVER]: Timeout occurred, no messages received for 2 minutes. Exiting...")
+            if self.myip == recv_eightip:
+                print("self.myip", self.myip)
+                print("recv_eightip", recv_eightip)
+                self.log_num_decoded_msgs()
+            sys.exit(1)
         
 
     def verify_checkSum(self, packet: Packet):
@@ -92,18 +133,18 @@ class Receiver:
         # k: len of the buffer
         k = len(self.buffer)
         # print("decoder km: ", (k, self.senderM))
+        print(f'[RECEIVER]: spawming the zfec decoder')
         self.decoder = zfec.Decoder(k, self.senderM) 
         blocksReceived = []
         blockNums = []
-
         self.buffer = sorted(self.buffer, key=lambda pkt:pkt.packetNumber)
         for pkt in self.buffer:
             blocksReceived.append(pkt.packetData)
             blockNums.append(pkt.packetNumber)
 
-
+        print(f"[RECEIVER]: passing into the zfec decoder")
         decoded = self.decoder.decode(blocksReceived, blockNums)
-        # print(decoded)
+        print(f"[RECEIVER]: decoded={decoded}")
 
         self.buffer: List[Packet] = [] # clear the buffer
         self.decoder = None # clear the decoder 

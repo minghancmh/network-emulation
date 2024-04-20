@@ -1,7 +1,3 @@
-
-# docker-compose up -d
-# docker-compose logs <service-name>
-
 version: '3.8'
 
 services:
@@ -13,19 +9,27 @@ services:
     stdin_open: true
     tty: true
     network_mode: bridge
+    volumes: 
+      - /Users/murong/Desktop/BERKELEY/ELENG122/network-emulation/ecgen/logs:/app/logs
 
   router:
     build:
       dockerfile: router.Dockerfile
+      # args:
+      #   packet_drop_rate: ${PACKET_DROP_RATE}
     deploy:
-      replicas: 5
+      replicas: 20
     network_mode: bridge
+    volumes: 
+      - /Users/murong/Desktop/BERKELEY/ELENG122/network-emulation/ecgen/logs:/app/logs
 
   receiver:
     build:
       dockerfile: receiver.Dockerfile
     deploy:
-      replicas: 15
+      replicas: 10
     network_mode: bridge
+    volumes:
+      - /Users/murong/Desktop/BERKELEY/ELENG122/network-emulation/ecgen/logs:/app/logs
 
 
