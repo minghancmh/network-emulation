@@ -1,0 +1,63 @@
+\section{Methodology}
+\label{sec: Methodology}
+
+The idea of this project was to vary the values of $\it{redundancyFactor}$ and $\it{packetDropRate}$, and finally determine the probability that a receiver can accurately decode a message. \\
+With these definitions, we have: 
+\begin{equation} \label{eq: yPlus}
+    m = \rho_{rf} \cdot k
+\end{equation}
+
+where $\rho_{rf}$ is the $\it{redundancyFactor}$, $k$ is the number of original packets after packetizing a stream, and $m$ is the total number of packets to be sent through the network. This provides us 
+$m-n$ redundant packets in the network. Based on the $zfec$ encoder, a receiver would be able to decode the message as long as it received any $n$ of the $m$ messasges in the network. The value of $\rho_{rf}$ was then varied, $0\leq\rho_{rf}\leq1$. It should be noted that when $\rho_{rf} = 0$, this degenerates to sending the raw packets over the network, with no redundancy. \\
+Next, we also varied the value of $packetDropRate$, where all routers in the network had a specific constant $\omega$. This was key to emulating the idea of an unrealiable network. 
+
+\begin{equation} \label{eq: yPlus}
+    P(routerForward) = 1-\omega
+\end{equation}
+
+
+\subsection{Topology Generation}
+
+To setup the network in the docker environment, we decided to employ the use of an
+Erdos-Renyi graph.
+In the context of emulating a router network for a networks project, employing the Erdős-Rényi (E-R) model is particularly advantageous due to its fundamental characteristics, which mirror aspects of the real-world structure of the Internet\cite{Li2021}. The Erdős-Rényi graph is a type of random graph where edges between pairs of nodes are established with a constant probability, independent of other edges. This stochastic nature of the E-R model captures the inherent randomness and organic development observed in the topology of the World Wide Web. Unlike more deterministic models or regular graphs where the connections are fixed and predictable, the E-R model allows for the exploration of network behaviors under various random configurations, reflecting the unpredictable nature of real-world networks. This aspect is crucial for studying properties such as network robustness, connectivity, and path diversity, which are integral to understanding and designing efficient and resilient router networks. The flexibility and simplicity of the E-R graph make it a suitable choice for modeling networks that need to represent a wide array of potential connection scenarios, akin to the complex and diverse linkage seen in the global Internet infrastructure.
+
+\subsection{Simulation Parameters}
+
+To simulate the experiment, we created a network of 20 nodes using python's networkx, with $p=0.2$, where $p$ represents the probability of edge creation. We also attached a host to each of these routers, where a random selected host was to be our
+final $receiver$ node (acting as the unicast receiver), which decodes the transmitted packets. 
+In each experiment, a total of 
+200 different messages were sent, each of 200 words long. 
+
+
+
+\subsection{Encoding and Decoding}
+The encoding and decoding scheme is implemented by the zfec library \cite{Rizzo2013}.
+The encoding is parameterized by two integers, k and m. m is the total number of blocks produced, and k is how many of those blocks are necessary to reconstruct the original data.
+Data is divided into "primary blocks" sized at $\frac{1}{k}$ of the original data.
+"Secondary blocks" are generated on primary blocks for redundancy.
+Metadata, including $k$, $m$, share numbers, and padding, is generated. 
+The metadata and blocks are then compressed and appended to each share.
+The final encoded data comprises $m$ blocks, each containing compressed metadata and data blocks.
+The decoding process is the reverse of encoding.
+Minimum $k$ blocks are required for decoding.
+Compressed metadata is extracted and decompressed to retrieve necessary information.
+The original data is then reconstructed using metadata and selected blocks.
+
+
+
+
+% \begin{equation} \label{eq: yPlus}
+% y^+ = \frac{u_\tau y}{\nu} = \frac{y}{\nu}\sqrt{\frac{\tau_\omega}{\rho}}
+% \end{equation}
+
+% Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+% \begin{equation} \label{eq: Shear Stress at the Wall}
+% \tau_{\omega} = \frac{1}{2} \rho C_f U^2
+% \end{equation}
+
+% Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+% \begin{equation} \label{eq: yPlus development}
+% y^+ = \frac{y}{\nu}\sqrt{\frac{\frac{1}{2}\rho C_f U^2}{\rho}} = \underbrace{\left(\frac{UD}{\nu}\right)}_{Re_{D}}\frac{y}{D}\sqrt{\frac{C_f}{2}}
+% \end{equation}

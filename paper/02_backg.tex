@@ -1,0 +1,41 @@
+% A Theory section should extend, not repeat, the background to the
+% article already dealt with in the Introduction and lay the
+% foundation for further work.
+
+\section{Introduction}
+\label{sec: intro}
+
+This project investigates the resilience and efficiency of network communication protocols under varying conditions of redundancy and packet loss. The primary goal is to examine the impact of adjusting the $redundancyFactor$ alongside the $packetDropRate$ on the probability of successful payload decoding at the receiver end. Such an investigation is crucial for understanding and improving the robustness of network systems in environments where data loss and transmission errors are prevalent.
+
+To facilitate a controlled and replicable experiment setup, Docker is employed as the simulation environment. Docker provides a stable and isolated platform where different network configurations and conditions can be emulated with precision. By leveraging Docker containers, we can simulate a network of routers and endpoints, with the ability to finely tune parameters such as the $redundancyFactor$ and $packetDropRates$. This setup allows for a systematic analysis of how these variables influence the effectiveness of data transmission, specifically focusing on the decoding success rate at the network's receiver nodes.
+
+Throughout this project, various scenarios will be constructed to reflect a range of realistic operating conditions. The outcomes will contribute valuable insights into optimal network configurations and strategies, potentially guiding future developments in network design and error correction methodologies. By the conclusion of this experiment, we aim to establish a clearer understanding of the interdependencies between redundancy, packet loss, and payload integrity, ultimately enhancing the reliability of network communications in adverse conditions.
+
+% \begin{table*}[!htbp]
+% 	\footnotesize
+% 	\centering
+% 	\caption{Comparative analysis of drug administration routes}
+% 	\label{tbl: 1.1a}
+% 	\renewcommand{\arraystretch}{0.8}
+% 	\begin{tabular}{@{}lllll@{}}
+% 		\toprule[1pt]
+% 		&  & \textbf{Advantages}     & \textbf{} & \textbf{Disadvantages}                                                                                             \\ \midrule
+% 		%&&&&\\
+% 		\textbf{Oral}       &  & Convenient              &           & Highly variable absorption time                                                                                    \\
+% 		&  & Inexpensive             &           & Systemic side affects (e.g.\ First pass metabolism)                                                                 \\
+% 		&  & Portable                &           & Drug may be inactivated (e.g.\ Food ingested)                                                                       \\
+% 		&  &                         &           &                                                                                                                    \\
+% 		\textbf{Injection}  &  & Bioavailability (100\%) &           & Special equipment and trained personnel required                                                                   \\
+% 		&  & Fastest onset of action &           & Expensive (Transportation and storage costs)                                                                                \\
+% 		&  &                         &           & Invasive, can cause injuries and disease \\
+% 		&  &                         &           & transmission (e.g.\ Embolism, Phlebitis)                                                                                                                   \\
+% 		&  &                         &           &                                                                                                                    \\
+% 		\textbf{Inhalation} &  &  On-target delivery (Lung related diseases)             &           & Irritation of the respiratory tract may take place                                               \\
+% 		&  & Rapid onset of action   &           &  Variable dosing (e.g.\ Faulty inhalation technique                                                                                                                        \\
+% 		&  & Low drug dosage       &          &   Special apparatus is required                                                                                                                \\ \bottomrule[1pt]
+% 		%&  &                         &           &                                                                                                                    \\ \bottomrule[1pt]
+% 	\end{tabular}
+% \end{table*}
+
+
+
