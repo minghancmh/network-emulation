@@ -2,6 +2,7 @@
 
 # Calculate min, max, and step values for redundancyFactor
 REDUNDANCY_FACTOR_MIN=0.2
+<<<<<<< Updated upstream
 REDUNDANCY_FACTOR_MAX=0.9
 REDUNDANCY_FACTOR_STEP=0.05
 
@@ -9,6 +10,15 @@ REDUNDANCY_FACTOR_STEP=0.05
 PACKET_DROP_RATE_MIN=0.01
 PACKET_DROP_RATE_MAX=0.2
 PACKET_DROP_RATE_STEP=0.01
+=======
+REDUNDANCY_FACTOR_MAX=1
+REDUNDANCY_FACTOR_STEP=0.2
+
+# Calculate min, max, and step values for packetDropRate
+PACKET_DROP_RATE_MIN=0.05 # change bak to 0.02
+PACKET_DROP_RATE_MAX=0.50
+PACKET_DROP_RATE_STEP=0.05
+>>>>>>> Stashed changes
 
 
 # Loop through redundancyFactor from 0 to 1
