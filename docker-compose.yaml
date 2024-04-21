@@ -10,7 +10,7 @@ services:
     tty: true
     network_mode: bridge
     volumes: 
-      - /Users/murong/Desktop/BERKELEY/ELENG122/network-emulation/ecgen/logs:/app/logs
+      - /Users/minghanchan/Desktop/EL122 - Networks/networksProj/network-emulation/ecgen/logs:/app/logs
 
   router:
     build:
@@ -21,7 +21,7 @@ services:
       replicas: 20
     network_mode: bridge
     volumes: 
-      - /Users/murong/Desktop/BERKELEY/ELENG122/network-emulation/ecgen/logs:/app/logs
+      - /Users/minghanchan/Desktop/EL122 - Networks/networksProj/network-emulation/ecgen/logs:/app/logs
 
   receiver:
     build:
@@ -30,6 +30,6 @@ services:
       replicas: 10
     network_mode: bridge
     volumes:
-      - /Users/murong/Desktop/BERKELEY/ELENG122/network-emulation/ecgen/logs:/app/logs
+      - /Users/minghanchan/Desktop/EL122 - Networks/networksProj/network-emulation/ecgen/logs:/app/logs
 
 
