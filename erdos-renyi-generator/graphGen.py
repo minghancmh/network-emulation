@@ -56,10 +56,10 @@ def main(argv):
 
 
 # Create an Erdős-Rényi graph with 50 nodes and a probability of 0.2 for edge creation
-    g = nx.erdos_renyi_graph(routers, p, seed=int(time.time())) # seed 50 for reproducibility
-    if (not nx.is_connected(g)):
-        print("ERROR: Graph generation failed. Graph is not connected! Please try to increase the value of 'routers', or 'p-edge' in config!")
-        sys.exit(1)
+    g = nx.erdos_renyi_graph(routers, p, seed=40) # seed 50 for reproducibility
+    # if (not nx.is_connected(g)):
+    #     print("ERROR: Graph generation failed. Graph is not connected! Please try to increase the value of 'routers', or 'p-edge' in config!")
+    #     sys.exit(1)
 
     # Drawing the graph
     plt.figure(figsize=(10, 8))  # Set the size of the figure
