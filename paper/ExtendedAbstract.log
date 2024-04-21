@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.8.24)  19 APR 2024 16:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.8.24)  20 APR 2024 22:34
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -323,6 +323,18 @@ LaTeX Warning: Unused global option(s):
 
 LaTeX Warning: Label `eq: yPlus' multiply defined.
 
+
+LaTeX Warning: Label `eq: yPlus' multiply defined.
+
+
+LaTeX Warning: Label `eq: yPlus' multiply defined.
+
+
+LaTeX Warning: Label `eq: yPlus' multiply defined.
+
+
+LaTeX Warning: Label `eq: yPlus' multiply defined.
+
 )
 \openout1 = `ExtendedAbstract.aux'.
 
@@ -384,24 +396,50 @@ Underfull \vbox (badness 1292) has occurred while \output is active []
 ) (./03_imple.tex [1{/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
-]) (./04_resul.tex) (./05_concl.tex) (./ExtendedAbstract.bbl) [2] (./ExtendedAbstract.aux)
+]) (./04_resul.tex
+<experimental.png, id=13, 843.15pt x 875.27pt>
+File: experimental.png Graphic file (type png)
+<use experimental.png>
+Package pdftex.def Info: experimental.png  used on input line 9.
+(pdftex.def)             Requested size: 218.51521pt x 226.83028pt.
+
+Underfull \hbox (badness 2221) in paragraph at lines 13--16
+[]\OT1/phv/m/n/10 Nonetheless, we see that our sur-face plot
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 32--34
+
+ []
+
+
+Package amsmath Warning: Foreign command \atopwithdelims;
+(amsmath)                \frac or \genfrac should be used instead
+(amsmath)                 on input line 36.
+
+<2hops.png, id=15, 837.1275pt x 845.1575pt>
+File: 2hops.png Graphic file (type png)
+<use 2hops.png>
+Package pdftex.def Info: 2hops.png  used on input line 42.
+(pdftex.def)             Requested size: 218.51521pt x 220.5998pt.
+[2 <./experimental.png>]) (./05_concl.tex) (./ExtendedAbstract.bbl) [3 <./2hops.png>] (./ExtendedAbstract.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 10161 strings out of 476025
- 221604 string characters out of 5790017
+ 10186 strings out of 476025
+ 221993 string characters out of 5790017
  1867388 words of memory out of 5000000
- 30461 multiletter control sequences out of 15000+600000
- 531195 words of font info for 77 fonts, out of 8000000 for 9000
+ 30481 multiletter control sequences out of 15000+600000
+ 534588 words of font info for 81 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  73i,8n,77p,1402b,524s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on ExtendedAbstract.pdf (2 pages, 81898 bytes).
+</usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
+Output written on ExtendedAbstract.pdf (3 pages, 394332 bytes).
 PDF statistics:
- 47 PDF objects out of 1000 (max. 8388607)
- 28 compressed objects within 1 object stream
+ 70 PDF objects out of 1000 (max. 8388607)
+ 40 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
