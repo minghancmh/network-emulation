@@ -10,4 +10,9 @@ J.~Li.
 \newblock A brief overview of graph theory: Erdos-renyi random graph model and small world phenomenon.
 \newblock 2021.
 
+\bibitem{Rizzo2013}
+L.~Rizzo.
+\newblock zfec -- efficient, portable erasure coding tool.
+\newblock 2013.
+
 \end{thebibliography}

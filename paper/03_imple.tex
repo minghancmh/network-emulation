@@ -31,6 +31,20 @@ In each experiment, a total of
 
 
 
+\subsection{Encoding and Decoding}
+The encoding and decoding scheme is implemented by the zfec library \cite{Rizzo2013}.
+The encoding is parameterized by two integers, k and m. m is the total number of blocks produced, and k is how many of those blocks are necessary to reconstruct the original data.
+Data is divided into "primary blocks" sized at $\frac{1}{k}$ of the original data.
+"Secondary blocks" are generated on primary blocks for redundancy.
+Metadata, including $k$, $m$, share numbers, and padding, is generated. 
+The metadata and blocks are then compressed and appended to each share.
+The final encoded data comprises $m$ blocks, each containing compressed metadata and data blocks.
+The decoding process is the reverse of encoding.
+Minimum $k$ blocks are required for decoding.
+Compressed metadata is extracted and decompressed to retrieve necessary information.
+The original data is then reconstructed using metadata and selected blocks.
+
+
 
 
 % \begin{equation} \label{eq: yPlus}
