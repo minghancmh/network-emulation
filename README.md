@@ -1,5 +1,12 @@
 # networksConfig
 
+This project aims to set up a network using Docker nodes, to simulate an unreliable network. We then evaluate the effectiveness of Packet Erasure Coding in the simulated unreliable network.
+
+[Packet Erasure coding in an unreliable network (Poster)](poster.pdf)
+[Evaluation of the Effectiveness of Packet Erasure Codes in a Docker-Simulated Unreliable Network (Paper)](paper/ExtendedAbstract.pdf)
+
+# P
+
 # Set up
 
 ```jsx
