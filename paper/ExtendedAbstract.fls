@@ -644,10 +644,6 @@ INPUT ./experimental.png
 INPUT ./experimental.png
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/helvetic/phvr7t.tfm
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/helvetic/phvb7t.tfm
-INPUT /usr/local/texlive/2023/texmf-dist/fonts/vf/adobe/helvetic/phvb7t.vf
-INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/helvetic/phvb8r.tfm
-INPUT /usr/local/texlive/2023/texmf-dist/fonts/vf/adobe/helvetic/phvr7t.vf
-INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/helvetic/phvr8r.tfm
 INPUT ./2hops.png
 INPUT ./2hops.png
 INPUT 2hops.png
@@ -664,6 +660,10 @@ INPUT ./ExtendedAbstract.bbl
 INPUT ExtendedAbstract.bbl
 INPUT ./ExtendedAbstract.bbl
 INPUT ExtendedAbstract.bbl
+INPUT /usr/local/texlive/2023/texmf-dist/fonts/vf/adobe/helvetic/phvb7t.vf
+INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/helvetic/phvb8r.tfm
+INPUT /usr/local/texlive/2023/texmf-dist/fonts/vf/adobe/helvetic/phvr7t.vf
+INPUT /usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/helvetic/phvr8r.tfm
 INPUT ExtendedAbstract.aux
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 INPUT /usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
